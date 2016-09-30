@@ -86,11 +86,7 @@ L.Layer = L.Evented.extend({
 		this._zoomAnimated = map._zoomAnimated;
 
 		if (this.getEvents) {
-			var events = this.getEvents();
-			map.on(events, this);
-			this.once('remove', function () {
-				map.off(events, this);
-			}, this);
+			map.on(this.getEvents(), this);
 		}
 
 		this.onAdd(map);
@@ -169,6 +165,10 @@ L.Map.include({
 
 		if (layer.getAttribution && this.attributionControl) {
 			this.attributionControl.removeAttribution(layer.getAttribution());
+		}
+
+		if (layer.getEvents) {
+			this.off(layer.getEvents(), layer);
 		}
 
 		delete this._layers[id];

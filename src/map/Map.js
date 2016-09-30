@@ -665,7 +665,7 @@ L.Map = L.Evented.extend({
 	// Given a pixel coordinate relative to the map container, returns the corresponding
 	// pixel coordinate relative to the [origin pixel](#map-getpixelorigin).
 	containerPointToLayerPoint: function (point) { // (Point)
-		if (this._rotate) {
+		if (this._rotate && this._bearing) {
 			return L.point(point)
 				.subtract(this._getMapPanePos())
 				.rotateFrom(-this._bearing, this._getRotatePanePos())
@@ -680,7 +680,7 @@ L.Map = L.Evented.extend({
 	// Given a pixel coordinate relative to the [origin pixel](#map-getpixelorigin),
 	// returns the corresponding pixel coordinate relative to the map container.
 	layerPointToContainerPoint: function (point) { // (Point)
-		if (this._rotate) {
+		if (this._rotate && this._bearing) {
 			return L.point(point)
 				.add(this._getRotatePanePos())
 				.rotateFrom(this._bearing, this._getRotatePanePos())
@@ -842,11 +842,8 @@ L.Map = L.Evented.extend({
 			// @pane markerPane: HTMLElement = 6
 			// Pane for marker icons
 		this.createPane('markerPane');
-		// @pane tooltipPane: HTMLElement = 650
-		// Pane for tooltip.
-		this.createPane('tooltipPane');
-		// @pane popupPane: HTMLElement = 700
-		// Pane for `Popup`s.
+			// @pane popupPane: HTMLElement = 7
+			// Pane for popups.
 		this.createPane('popupPane');
 		}
 
@@ -1113,7 +1110,7 @@ L.Map = L.Evented.extend({
 	},
 
 	_draggableMoved: function (obj) {
-		obj = obj.dragging && obj.dragging.enabled() ? obj : this;
+		obj = obj.options.draggable ? obj : this;
 		return (obj.dragging && obj.dragging.moved()) || (this.boxZoom && this.boxZoom.moved());
 	},
 
@@ -1165,7 +1162,7 @@ L.Map = L.Evented.extend({
 	_getNewPixelOrigin: function (center, zoom) {
 		var viewHalf = this.getSize()._divideBy(2);
 
-		if (this._rotate) {
+		if (this._rotate && this._bearing) {
 			return this.project(center, zoom)
 				.rotate(this._bearing)
 				._subtract(viewHalf)
@@ -1194,11 +1191,7 @@ L.Map = L.Evented.extend({
 
 	// offset of the specified place to the current center in pixels
 	_getCenterOffset: function (latlng) {
-		var centerOffset = this.latLngToLayerPoint(latlng).subtract(this._getCenterLayerPoint())
-		if (this._rotate){
-			centerOffset = centerOffset.rotate(this._bearing);
-		}
-		return centerOffset;
+		return this.latLngToLayerPoint(latlng).subtract(this._getCenterLayerPoint());
 	},
 
 	// adjust center for view to get inside bounds

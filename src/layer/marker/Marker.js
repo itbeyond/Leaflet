@@ -76,22 +76,15 @@ L.Marker = L.Layer.extend({
 	onAdd: function (map) {
 		this._zoomAnimated = this._zoomAnimated && map.options.markerZoomAnimation;
 
-		if (this._zoomAnimated) {
-			map.on('zoomanim', this._animateZoom, this);
-		}
-
 		this._initIcon();
 		this.update();
+		map.on('rotate', this.update, this);
 	},
 
-	onRemove: function (map) {
+	onRemove: function () {
 		if (this.dragging && this.dragging.enabled()) {
 			this.options.draggable = true;
 			this.dragging.removeHooks();
-		}
-
-		if (this._zoomAnimated) {
-			map.off('zoomanim', this._animateZoom, this);
 		}
 
 		this._removeIcon();
@@ -99,11 +92,16 @@ L.Marker = L.Layer.extend({
 	},
 
 	getEvents: function () {
-		return {
+		var events = {
 			zoom: this.update,
-			viewreset: this.update,
-			rotate: this.update
+			viewreset: this.update
 		};
+
+		if (this._zoomAnimated) {
+			events.zoomanim = this._animateZoom;
+		}
+
+		return events;
 	},
 
 	// @method getLatLng: LatLng
@@ -250,24 +248,16 @@ L.Marker = L.Layer.extend({
 	},
 
 	_setPos: function (pos) {
-		var iconAnchor = this.options.icon.options.iconAnchor || new L.Point(0, 0);
 		if (this._map._rotate) {
-			L.DomUtil.setPosition(this._icon, pos, -this._map._bearing || 0, pos.add(iconAnchor));
+			var anchor = this.options.icon.options.iconAnchor || new L.Point(0, 0);
+			L.DomUtil.setPosition(this._icon, pos, -this._map._bearing || 0, pos.add(anchor));
 		} else {
 			L.DomUtil.setPosition(this._icon, pos);
 		}
 
 
 		if (this._shadow) {
-			if (this._map._rotate) {
-				if (this.options.icon.options.shadowAnchor){
-					L.DomUtil.setPosition(this._shadow, pos, -this._map._bearing || 0, pos.add(this.options.icon.options.shadowAnchor));
-				} else {
-					L.DomUtil.setPosition(this._shadow, pos, -this._map._bearing || 0, pos.add(iconAnchor));
-				}
-			} else {
-				L.DomUtil.setPosition(this._shadow, pos);
-			}
+			L.DomUtil.setPosition(this._shadow, pos);
 		}
 
 		this._zIndex = pos.y + this.options.zIndexOffset;

@@ -68,17 +68,11 @@ L.Draggable = L.Evented.extend({
 		this._moved = false;
 	},
 
-	updateMapBearing: function(mapBearing) {
-		this._mapBearing = mapBearing;
-	},
-
 	_onDown: function (e) {
 		// Ignore simulated events, since we handle both touch and
 		// mouse explicitly; otherwise we risk getting duplicates of
 		// touch events, see #4315.
-		// Also ignore the event if disabled; this happens in IE11
-		// under some circumstances, see #3666.
-		if (e._simulated || !this._enabled) { return; }
+		if (e._simulated) { return; }
 
 		this._moved = false;
 
@@ -113,9 +107,7 @@ L.Draggable = L.Evented.extend({
 		// Ignore simulated events, since we handle both touch and
 		// mouse explicitly; otherwise we risk getting duplicates of
 		// touch events, see #4315.
-		// Also ignore the event if disabled; this happens in IE11
-		// under some circumstances, see #3666.
-		if (e._simulated || !this._enabled) { return; }
+		if (e._simulated) { return; }
 
 		if (e.touches && e.touches.length > 1) {
 			this._moved = true;
@@ -124,12 +116,7 @@ L.Draggable = L.Evented.extend({
 
 		var first = (e.touches && e.touches.length === 1 ? e.touches[0] : e),
 		    newPoint = new L.Point(first.clientX, first.clientY),
-		    offset = newPoint.subtract(this._startPoint),
-		    bearing = this._mapBearing || 0;
-
-		if (bearing) {
-			offset = offset.rotate(-bearing);
-		}
+		    offset = newPoint.subtract(this._startPoint);
 
 		if (!offset.x && !offset.y) { return; }
 		if (Math.abs(offset.x) + Math.abs(offset.y) < this.options.clickTolerance) { return; }
@@ -181,9 +168,7 @@ L.Draggable = L.Evented.extend({
 		// Ignore simulated events, since we handle both touch and
 		// mouse explicitly; otherwise we risk getting duplicates of
 		// touch events, see #4315.
-		// Also ignore the event if disabled; this happens in IE11
-		// under some circumstances, see #3666.
-		if (e._simulated || !this._enabled) { return; }
+		if (e._simulated) { return; }
 
 		L.DomUtil.removeClass(document.body, 'leaflet-dragging');
 

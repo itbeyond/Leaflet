@@ -83,7 +83,6 @@ L.Map.include({
 	_handleGeolocationResponse: function (pos) {
 		var lat = pos.coords.latitude,
 		    lng = pos.coords.longitude,
-		    hdg = pos.coords.heading,
 		    latlng = new L.LatLng(lat, lng),
 		    bounds = latlng.toBounds(pos.coords.accuracy),
 		    options = this._locateOptions;
@@ -96,8 +95,7 @@ L.Map.include({
 		var data = {
 			latlng: latlng,
 			bounds: bounds,
-			timestamp: pos.timestamp,
-			heading: hdg
+			timestamp: pos.timestamp
 		};
 
 		for (var i in pos.coords) {

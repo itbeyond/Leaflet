@@ -653,7 +653,7 @@ describe("Map", function () {
 			document.body.removeChild(div);
 		});
 
-		it('move to requested center and zoom, and call zoomend once', function (done) {
+		it.skipInPhantom('move to requested center and zoom, and call zoomend once', function (done) {
 			this.timeout(10000); // This test takes longer than usual due to frames
 
 			var spy = sinon.spy(),
@@ -670,7 +670,7 @@ describe("Map", function () {
 			map.on('zoomend', callback).flyTo(newCenter, newZoom);
 		});
 
-		it('flyTo start latlng == end latlng', function (done) {
+		it.skipInPhantom('flyTo start latlng == end latlng', function (done) {
 			this.timeout(10000); // This test takes longer than usual due to frames
 
 			var dc = new L.LatLng(38.91, -77.04);

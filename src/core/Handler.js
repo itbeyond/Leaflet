@@ -12,24 +12,22 @@ L.Handler = L.Class.extend({
 		this._map = map;
 	},
 
-	// @method enable(): this
+	// @method enable()
 	// Enables the handler
 	enable: function () {
-		if (this._enabled) { return this; }
+		if (this._enabled) { return; }
 
 		this._enabled = true;
 		this.addHooks();
-		return this;
 	},
 
-	// @method disable(): this
+	// @method disable()
 	// Disables the handler
 	disable: function () {
-		if (!this._enabled) { return this; }
+		if (!this._enabled) { return; }
 
 		this._enabled = false;
 		this.removeHooks();
-		return this;
 	},
 
 	// @method enabled(): Boolean

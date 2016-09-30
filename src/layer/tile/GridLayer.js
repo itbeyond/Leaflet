@@ -120,11 +120,7 @@ L.GridLayer = L.Layer.extend({
 
 		// @option className: String = ''
 		// A custom class name to assign to the tile layer. Empty by default.
-		className: '',
-
-		// @option keepBuffer: Number = 2
-		// When panning the map, keep this many rows and columns of tiles before unloading them.
-		keepBuffer: 2
+		className: ''
 	},
 
 	initialize: function (options) {
@@ -233,12 +229,6 @@ L.GridLayer = L.Layer.extend({
 			}
 
 			events.move = this._onMove;
-
-			if (!this._onRotate) {
-				this._onRotate = L.Util.throttle(this._onMoveEnd, this.options.updateInterval, this);
-			}
-
-			events.rotate = this._onRotate;
 		}
 
 		if (this._zoomAnimated) {
@@ -580,7 +570,7 @@ L.GridLayer = L.Layer.extend({
 	_onMoveEnd: function () {
 		if (!this._map || this._map._animatingZoom) { return; }
 
-		this._update();
+		this._resetView();
 	},
 
 	_getTiledPixelBounds: function (center) {
@@ -591,7 +581,7 @@ L.GridLayer = L.Layer.extend({
 			size = map.getSize(),
 			halfSize;
 
-		if (this._map._rotate) {
+		if (this._map._rotate && this._map._bearing) {
 			halfSize = new L.Bounds([
 				map.containerPointToLayerPoint([0, 0]).floor(),
 				map.containerPointToLayerPoint([size.x, 0]).floor(),
@@ -618,16 +608,10 @@ L.GridLayer = L.Layer.extend({
 		var pixelBounds = this._getTiledPixelBounds(center),
 		    tileRange = this._pxBoundsToTileRange(pixelBounds),
 		    tileCenter = tileRange.getCenter(),
-		    queue = [],
-		    margin = this.options.keepBuffer,
-		    noPruneRange = new L.Bounds(tileRange.getBottomLeft().subtract([margin, -margin]),
-		                              tileRange.getTopRight().add([margin, -margin]));
+		    queue = [];
 
 		for (var key in this._tiles) {
-			var c = this._tiles[key].coords;
-			if (c.z !== this._tileZoom || !noPruneRange.contains(L.point(c.x, c.y))) {
-				this._tiles[key].current = false;
-			}
+			this._tiles[key].current = false;
 		}
 
 		// _update just loads more tiles. If the tile zoom level differs too much

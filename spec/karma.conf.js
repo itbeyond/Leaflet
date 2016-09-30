@@ -1,7 +1,7 @@
 // Karma configuration
 module.exports = function (config) {
 
-	var libSources = require(__dirname + '/../build/build.js').getFiles();
+	var libSources = require(__dirname+'/../build/build.js').getFiles();
 
 	var files = [
 		"spec/sinon.js",
@@ -12,8 +12,7 @@ module.exports = function (config) {
 		"node_modules/prosthetic-hand/dist/prosthetic-hand.js",
 		"spec/suites/SpecHelper.js",
 		"spec/suites/**/*.js",
-		"dist/*.css",
-		{pattern: "dist/images/*.png", included: false, serve: true}
+		{pattern: "dist/images/*.png", included: false}
 	]);
 
 	config.set({
@@ -33,9 +32,6 @@ module.exports = function (config) {
 
 		// list of files / patterns to load in the browser
 		files: files,
-		proxies: {
-			'/base/dist/images/': 'dist/images/'
-		},
 		exclude: [],
 
 		// test results reporter to use
@@ -63,21 +59,7 @@ module.exports = function (config) {
 		// - Safari (only Mac)
 		// - PhantomJS
 		// - IE (only Windows)
-		browsers: ['PhantomJSCustom'],
-
-		customLaunchers: {
-			'PhantomJSCustom': {
-				base: 'PhantomJS',
-				flags: ['--load-images=true'],
-				options: {
-					onCallback: function (data) {
-						if (data.render) {
-							page.render(data.render);
-						}
-					}
-				}
-			}
-		},
+		browsers: ['PhantomJS'],
 
 		// If browser does not capture in given timeout [ms], kill it
 		captureTimeout: 5000,

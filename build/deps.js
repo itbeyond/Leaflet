@@ -69,23 +69,12 @@ var deps = {
 
 	Popup: {
 		src: [
-			'layer/DivOverlay.js',
 			'layer/Popup.js',
 			'layer/Layer.Popup.js',
 			'layer/marker/Marker.Popup.js'
 		],
 		deps: ['Marker'],
 		desc: 'Used to display the map popup (used mostly for binding HTML data to markers and paths on click).'
-	},
-
-	Tooltip: {
-		src: [
-			'layer/Tooltip.js',
-			'layer/Layer.Tooltip.js',
-			'layer/marker/Marker.Tooltip.js'
-		],
-		deps: ['Popup', 'Marker'],
-		desc: 'Used to display the map tooltip (used mostly for binding short descriptions to markers and paths on mouseover).'
 	},
 
 	LayerGroup: {
@@ -188,12 +177,10 @@ var deps = {
 		      'dom/DomEvent.DoubleTap.js',
 		      'dom/DomEvent.Pointer.js',
 		      'core/Handler.js',
-		      'map/handler/Map.TouchGestures.js',
 		      'map/handler/Map.TouchZoom.js',
-		      'map/handler/Map.TouchRotate.js',
 		      'map/handler/Map.Tap.js'],
 		deps: ['AnimationZoom'],
-		desc: 'Enables smooth touch zoom / tap / rotate / longhold / doubletap on iOS, IE10, Android.'
+		desc: 'Enables smooth touch zoom / tap / longhold / doubletap on iOS, IE10, Android.'
 	},
 
 	BoxZoom: {
@@ -207,16 +194,6 @@ var deps = {
 		desc: 'Enables keyboard pan/zoom when the map is focused.'
 	},
 
-	ContainerMutation: {
-		src: ['map/handler/Map.ContainerMutation.js'],
-		desc: 'Enables tracking DOM mutations to the map container size.'
-	},
-
-	CompassBearing: {
-		src: ['map/handler/Map.CompassBearing.js'],
-		desc: 'Enables rotating the map based on the device compass'
-	},
-	
 	MarkerDrag: {
 		src: ['layer/marker/Marker.Drag.js'],
 		deps: ['Marker'],
